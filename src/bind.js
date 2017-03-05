@@ -1,4 +1,4 @@
-export class FirebaseBind {
+export default class {
     constructor(source, options,ref) {
         this.hooks = {
             ...options.hooks

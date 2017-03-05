@@ -2,7 +2,7 @@
   "name": "vuex-firebase",
   "version": "0.0.3",
   "description": "Sync Firebase Data to Vuex",
-  "main": "index.js",
+  "main": "dist/vuex-firebase.js",
   "scripts": {
     "build": "webpack",
     "minify": "webpack -p"

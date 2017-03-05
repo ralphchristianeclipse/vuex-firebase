@@ -3,10 +3,10 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: {
-        "index": './src/index.js'
+        "vuex-firebase": './src/index.js'
     },
     output: {
-        path: path.resolve(__dirname, ''),
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
     },
     module: {
