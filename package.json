@@ -1,0 +1,33 @@
+{
+  "name": "vuex-firebase",
+  "version": "0.0.1",
+  "description": "Sync Firebase Data to Vuex",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "minify": "webpack -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ralphchristianeclipse/vuex-firebase.git"
+  },
+  "keywords": [
+    "vuex",
+    "firebase",
+    "bind",
+    "sync"
+  ],
+  "author": "Ralph Christian D. Eclipse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ralphchristianeclipse/vuex-firebase/issues"
+  },
+  "homepage": "https://github.com/ralphchristianeclipse/vuex-firebase#readme",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-env": "^1.2.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "webpack": "^2.2.1"
+  }
+}
