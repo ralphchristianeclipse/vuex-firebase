@@ -1,5 +1,5 @@
 import { FirebaseBind } from './bind';
-export default function(store, fb) {
+export function firebaseSync(store, fb) {
     let Vue = store._watcherVM;
     const state = {
         database: fb.database(),
