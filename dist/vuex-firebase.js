@@ -348,51 +348,38 @@ exports.default = function (store, fb, Vue) {
                             case 0:
                                 _payload = _extends({}, payload), _ref = _payload._ref, _key = _payload._key, _time = _payload._time, _hook = _payload._hook, data = _objectWithoutProperties(_payload, ['_ref', '_key', '_time', '_hook']);
 
+
+                                console.log(data);
+
                                 if (!data) {
-                                    _context.next = 13;
+                                    _context.next = 9;
                                     break;
                                 }
 
+                                _key = _key || getters.$database.ref(_ref).push().key;
+
                                 if (!_time) {
-                                    if (!data.created) {
-                                        data.created = getters.$timestamp;
-                                    }
+                                    data.created = data.created || getters.$timestamp;
                                     data.updated = getters.$timestamp;
                                 }
 
-                                if (!_key) {
-                                    _context.next = 8;
-                                    break;
-                                }
-
-                                _context.next = 6;
+                                _context.next = 7;
                                 return getters.$database.ref(_ref).child(_key).update(data);
 
-                            case 6:
+                            case 7:
                                 _context.next = 11;
                                 break;
 
-                            case 8:
-                                _context.next = 10;
-                                return getters.$database.ref(_ref).push(data).key;
-
-                            case 10:
-                                _key = _context.sent;
+                            case 9:
+                                _context.next = 11;
+                                return getters.$database.ref(_ref).child(_key).set(null);
 
                             case 11:
-                                _context.next = 15;
-                                break;
-
-                            case 13:
-                                _context.next = 15;
-                                return getters.$database.ref(_ref).child(_key).remove();
-
-                            case 15:
                                 if (_hook && _key) {
                                     _hook(_key);
                                 }
 
-                            case 16:
+                            case 12:
                             case 'end':
                                 return _context.stop();
                         }
