@@ -8,13 +8,17 @@ export default function(store, fb,Vue) {
     };
 
     const mutations = {
+        //Mutation for setting the firebaseBind object
+        //Using Vue.set to make it reactive
         VUEX_FIREBASE_BINDED(state,payload) {
             if(state.firebase[payload.ref]) return;
             Vue.set(state.firebase,payload.ref,payload);  
         },
+        //Unbind the firebaseBind object
         VUEX_FIREBASE_UNBINDED(state,payload) {
             Vue.delete(state.firebase,payload.ref);  
         },
+        
         VUEX_FIREBASE_ADDED(state, { index, record }) {
             state.firebase[record._ref].data.splice(index, 0, record);
         },
@@ -31,27 +35,38 @@ export default function(store, fb,Vue) {
     };
 
     const getters = {
-        
+        // Get the FirebaseBind Object by passing its key or source
         $firebase(state) {
             return key => state.firebase[key];
         },
+        //Firebase timestamp
         $timestamp(state) {
             return fb.database.ServerValue.TIMESTAMP;
         },
+        //Getter for firebase.database()
         $database(state) {
             return state.database;
         },
+        //firebase.storage()
         $storage(state) {
             return state.storage;
         },
     };
 
     const actions = {
-        async SAVE({ getters, commit }, payload) {
+        /*
+            _ref = the target node ex. 'users'
+            _key = the key for the data to send or you can omit it to use the push key
+            _hook = used for chaining key actions based on the key value good for updating relations of nodes
+            _time = set to true if you want to have created and updated time stamps
+        */
+        async VUEX_FIREBASE_SAVE({ getters, commit }, payload) {
             let { _ref, _key,_hook,_time, ...data } = {...payload};
 
             if(!_time) {
-                data.created = getters.$timestamp;
+                if(!data.created) {
+                    data.created = getters.$timestamp;
+                }
                 data.updated = getters.$timestamp;
             }
             if(_key) {
@@ -63,12 +78,14 @@ export default function(store, fb,Vue) {
                _hook(_key);
             }
         },
+        //Create new FirebaseBind Objects based on keys
         VUEX_FIREBASE_BIND({commit},payload) {
             Object.keys(payload).forEach(load => {
                 commit('VUEX_FIREBASE_BINDED',
                 new FirebaseBind(fb.database().ref(load),payload[load],load));                
             })
         },
+        //Unbind based on the pass key
         VUEX_FIREBASE_UNBIND({commit,getters},payload) {
             commit('VUEX_FIREBASE_UNBINDED',getters.$firebase(payload));
         }
@@ -82,6 +99,7 @@ export default function(store, fb,Vue) {
     };
     
     store.registerModule('VuexFirebase', VuexFirebase);
+    //Set the static store for FirebaseBind class
     FirebaseBind.store = store;
     
 }
