@@ -62,20 +62,22 @@ export default function(store, fb,Vue) {
         */
         async VUEX_FIREBASE_SAVE({ getters, commit }, payload) {
             let { _ref, _key,_time,_hook, ...data } = {...payload};
-            
-            if(_time) {
-                if(!data.created) {
-                    data.created = getters.$timestamp;
+            if(data) {
+                if(!_time) {
+                    if(!data.created) {
+                        data.created = getters.$timestamp;
+                    }
+                    data.updated = getters.$timestamp;
                 }
-                data.updated = getters.$timestamp;
-            }
-
-            if(_key) {
-              await getters.$database.ref(_ref).child(_key).update(data);
+                
+                if(_key) {
+                  await getters.$database.ref(_ref).child(_key).update(data);
+                } else {
+                   _key = await getters.$database.ref(_ref).push(data).key;
+                }
             } else {
-               _key = await getters.$database.ref(_ref).push(data).key;
+                await getters.$database.ref(_ref).child(_key).remove();
             }
-
             if(_hook && _key) {
                _hook(_key);
             }
