@@ -61,23 +61,21 @@ export default function(store, fb,Vue) {
             _time = set to true if you want to have created and updated time stamps
         */
         async VUEX_FIREBASE_SAVE({ getters, commit }, payload) {
-            let { _ref, _key,_hook,_time, ...data } = {...payload};
-
-            if(!_time) {
+            let { _ref, _key,_time,_hook, ...data } = {...payload};
+            
+            if(_time) {
                 if(!data.created) {
                     data.created = getters.$timestamp;
                 }
                 data.updated = getters.$timestamp;
             }
-            if(data) {
-                if(_key) {
-                  await getters.$database.ref(_ref).child(_key).update(data);
-                } else {
-                   _key = await getters.$database.ref(_ref).push(data).key;
-                }
+
+            if(_key) {
+              await getters.$database.ref(_ref).child(_key).update(data);
             } else {
-                await getters.$database.ref(_ref).child(_key).remove();
+               _key = await getters.$database.ref(_ref).push(data).key;
             }
+
             if(_hook && _key) {
                _hook(_key);
             }
