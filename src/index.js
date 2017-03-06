@@ -61,24 +61,25 @@ export default function(store, fb,Vue) {
             _time = set to true if you want to have created and updated time stamps
         */
         async VUEX_FIREBASE_SAVE({ getters, commit }, payload) {
-            let { _ref, _key,_time,_hook, ...data } = {...payload};
+            let { _ref, _key,_time,_delete,_hook, ...data } = {...payload};
             
-            console.log(data);
-            if(data) {
                 _key = _key || getters.$database.ref(_ref).push().key;
+                let firebase = getters.$database.ref(_ref).child(_key);
+                if(_hook && _key) {
+                   _hook(_key);
+                }
+                if(!data) {
+                    await firebase.remove();
+                    return;
+                }
                 
                 if(!_time) {
                     data.created = data.created || getters.$timestamp;
                     data.updated = getters.$timestamp;
                 }
                 
-                await getters.$database.ref(_ref).child(_key).update(data);
-            } else {
-                await getters.$database.ref(_ref).child(_key).set(null);
-            }
-            if(_hook && _key) {
-               _hook(_key);
-            }
+                await firebase.update(data);
+
         },
         //Create new FirebaseBind Objects based on keys
         VUEX_FIREBASE_BIND({commit},payload) {

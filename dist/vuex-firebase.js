@@ -340,46 +340,44 @@ exports.default = function (store, fb, Vue) {
             var getters = _ref6.getters,
                 commit = _ref6.commit;
             return _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-                var _payload, _ref, _key, _time, _hook, data;
+                var _payload, _ref, _key, _time, _delete, _hook, data, firebase;
 
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
-                                _payload = _extends({}, payload), _ref = _payload._ref, _key = _payload._key, _time = _payload._time, _hook = _payload._hook, data = _objectWithoutProperties(_payload, ['_ref', '_key', '_time', '_hook']);
+                                _payload = _extends({}, payload), _ref = _payload._ref, _key = _payload._key, _time = _payload._time, _delete = _payload._delete, _hook = _payload._hook, data = _objectWithoutProperties(_payload, ['_ref', '_key', '_time', '_delete', '_hook']);
 
 
-                                console.log(data);
+                                _key = _key || getters.$database.ref(_ref).push().key;
+                                firebase = getters.$database.ref(_ref).child(_key);
 
-                                if (!data) {
-                                    _context.next = 9;
+                                if (_hook && _key) {
+                                    _hook(_key);
+                                }
+
+                                if (data) {
+                                    _context.next = 8;
                                     break;
                                 }
 
-                                _key = _key || getters.$database.ref(_ref).push().key;
+                                _context.next = 7;
+                                return firebase.remove();
+
+                            case 7:
+                                return _context.abrupt('return');
+
+                            case 8:
 
                                 if (!_time) {
                                     data.created = data.created || getters.$timestamp;
                                     data.updated = getters.$timestamp;
                                 }
 
-                                _context.next = 7;
-                                return getters.$database.ref(_ref).child(_key).update(data);
-
-                            case 7:
                                 _context.next = 11;
-                                break;
-
-                            case 9:
-                                _context.next = 11;
-                                return getters.$database.ref(_ref).child(_key).set(null);
+                                return firebase.update(data);
 
                             case 11:
-                                if (_hook && _key) {
-                                    _hook(_key);
-                                }
-
-                            case 12:
                             case 'end':
                                 return _context.stop();
                         }
