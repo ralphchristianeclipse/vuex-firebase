@@ -93,9 +93,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _class = function () {
-    function _class(source, options, ref) {
-        _classCallCheck(this, _class);
+var FirebaseBind = function () {
+    function FirebaseBind(source, options, ref) {
+        _classCallCheck(this, FirebaseBind);
 
         this.hooks = _extends({}, options.hooks);
         this.error = options.error || function (err) {
@@ -107,7 +107,7 @@ var _class = function () {
         this.bind();
     }
 
-    _createClass(_class, [{
+    _createClass(FirebaseBind, [{
         key: 'index',
         value: function index(key) {
             return this.data.findIndex(function (val) {
@@ -237,10 +237,10 @@ var _class = function () {
         }
     }]);
 
-    return _class;
+    return FirebaseBind;
 }();
 
-exports.default = _class;
+exports.default = FirebaseBind;
 
 /***/ }),
 /* 1 */
@@ -255,9 +255,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-exports.default = function (store, fb) {
+exports.default = function (store, fb, Vue) {
 
-    var Vue = store._watcherVM;
     var state = {
         database: fb.database(),
         storage: fb.storage(),
