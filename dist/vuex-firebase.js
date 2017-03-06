@@ -356,31 +356,44 @@ exports.default = function (store, fb, Vue) {
                                     data.updated = getters.$timestamp;
                                 }
 
-                                if (!_key) {
-                                    _context.next = 7;
+                                if (!data) {
+                                    _context.next = 13;
                                     break;
                                 }
 
-                                _context.next = 5;
+                                if (!_key) {
+                                    _context.next = 8;
+                                    break;
+                                }
+
+                                _context.next = 6;
                                 return getters.$database.ref(_ref).child(_key).update(data);
 
-                            case 5:
-                                _context.next = 10;
+                            case 6:
+                                _context.next = 11;
                                 break;
 
-                            case 7:
-                                _context.next = 9;
+                            case 8:
+                                _context.next = 10;
                                 return getters.$database.ref(_ref).push(data).key;
 
-                            case 9:
+                            case 10:
                                 _key = _context.sent;
 
-                            case 10:
-                                if (_hook) {
+                            case 11:
+                                _context.next = 15;
+                                break;
+
+                            case 13:
+                                _context.next = 15;
+                                return getters.$database.ref(_ref).child(_key).remove();
+
+                            case 15:
+                                if (_hook && _key) {
                                     _hook(_key);
                                 }
 
-                            case 11:
+                            case 16:
                             case 'end':
                                 return _context.stop();
                         }

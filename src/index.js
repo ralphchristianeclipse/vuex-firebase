@@ -69,12 +69,16 @@ export default function(store, fb,Vue) {
                 }
                 data.updated = getters.$timestamp;
             }
-            if(_key) {
-              await getters.$database.ref(_ref).child(_key).update(data);
+            if(data) {
+                if(_key) {
+                  await getters.$database.ref(_ref).child(_key).update(data);
+                } else {
+                   _key = await getters.$database.ref(_ref).push(data).key;
+                }
             } else {
-               _key = await getters.$database.ref(_ref).push(data).key;
+                await getters.$database.ref(_ref).child(_key).remove();
             }
-            if(_hook) {
+            if(_hook && _key) {
                _hook(_key);
             }
         },

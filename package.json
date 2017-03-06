@@ -1,6 +1,6 @@
 {
   "name": "vuex-firebase",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Sync Firebase Data to Vuex",
   "main": "dist/vuex-firebase.js",
   "scripts": {
