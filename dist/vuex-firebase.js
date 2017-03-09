@@ -255,8 +255,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-exports.default = function (store, fb, Vue) {
-
+exports.default = function (store, fb) {
+    var Vue = store._watcherVM || store._vm;
     var state = {
         database: fb.database(),
         storage: fb.storage(),
@@ -268,12 +268,12 @@ exports.default = function (store, fb, Vue) {
         //Using Vue.set to make it reactive
         VUEX_FIREBASE_BINDED: function VUEX_FIREBASE_BINDED(state, payload) {
             if (state.firebase[payload.ref]) return;
-            Vue.set(state.firebase, payload.ref, payload);
+            Vue.$set(state.firebase, payload.ref, payload);
         },
 
         //Unbind the firebaseBind object
         VUEX_FIREBASE_UNBINDED: function VUEX_FIREBASE_UNBINDED(state, payload) {
-            Vue.delete(state.firebase, payload.ref);
+            Vue.$delete(state.firebase, payload.ref);
         },
         VUEX_FIREBASE_ADDED: function VUEX_FIREBASE_ADDED(state, _ref2) {
             var index = _ref2.index,
@@ -401,7 +401,9 @@ exports.default = function (store, fb, Vue) {
             var commit = _ref8.commit,
                 getters = _ref8.getters;
 
-            commit('VUEX_FIREBASE_UNBINDED', getters.$firebase(payload));
+            Object.keys(payload).forEach(function (load) {
+                commit('VUEX_FIREBASE_UNBINDED', getters.$firebase(load));
+            });
         }
     };
 
