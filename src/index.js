@@ -2,6 +2,7 @@ import FirebaseBind from './bind';
 export default function(store, fb) {
     const Vue = store._watcherVM || store._vm;
     const state = {
+        auth: fb.auth(),
         database: fb.database(),
         storage: fb.storage(),
         firebase: {},
@@ -35,6 +36,10 @@ export default function(store, fb) {
     };
 
     const getters = {
+        // Auth object of firebase
+        $auth(state) {
+            return state.auth;
+        },
         // Get the FirebaseBind Object by passing its key or source
         $firebase(state) {
             return key => state.firebase[key];

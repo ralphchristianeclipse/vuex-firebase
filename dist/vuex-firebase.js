@@ -258,6 +258,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 exports.default = function (store, fb) {
     var Vue = store._watcherVM || store._vm;
     var state = {
+        auth: fb.auth(),
         database: fb.database(),
         storage: fb.storage(),
         firebase: {}
@@ -304,6 +305,11 @@ exports.default = function (store, fb) {
     };
 
     var getters = {
+        // Auth object of firebase
+        $auth: function $auth(state) {
+            return state.auth;
+        },
+
         // Get the FirebaseBind Object by passing its key or source
         $firebase: function $firebase(state) {
             return function (key) {
