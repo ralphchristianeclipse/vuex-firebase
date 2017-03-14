@@ -21,17 +21,17 @@ export default function(store, fb) {
         },
         
         VUEX_FIREBASE_ADDED(state, { index, record }) {
-            state.firebase[record._ref].data.splice(index, 0, record);
+            state.firebase[record._.ref].data.splice(index, 0, record);
         },
         VUEX_FIREBASE_CHANGED(state, { index, record }) {
-            state.firebase[record._ref].data.splice(index, 1, record);
+            state.firebase[record._.ref].data.splice(index, 1, record);
         },
         VUEX_FIREBASE_REMOVED(state, { index, record }) {
-            state.firebase[record._ref].data.splice(index, 1);
+            state.firebase[record._.ref].data.splice(index, 1);
         },
         VUEX_FIREBASE_MOVED(state, { index, record, newIndex }) {
-            let array = state.firebase[record._ref].data;
-            array.splice(newIndex, 0, state.firebase[record._ref].data.splice(index, 1)[0]);
+            let array = state.firebase[record._.ref].data;
+            array.splice(newIndex, 0, state.firebase[record._.ref].data.splice(index, 1)[0]);
         },
     };
 
@@ -66,13 +66,13 @@ export default function(store, fb) {
             _time = set to true if you want to have created and updated time stamps
         */
         async VUEX_FIREBASE_SAVE({ getters, commit }, payload) {
-            let { _ref, _key,_time,_hook, ...data } = {...payload};
+            let { _, ...data } = {...payload};
             
-                _key = _key || getters.$database.ref(_ref).push().key;
-                let firebase = getters.$database.ref(_ref).child(_key);
+                _.key = _.key || getters.$database.ref(_.ref).push().key;
+                let firebase = getters.$database.ref(_.ref).child(_.key);
                 
-                if(_hook && _key) {
-                   _hook(_key);
+                if(_.hook && _.key) {
+                   _.hook(_.key);
                 }
                 
                 if(!Object.keys(data).length) {
@@ -80,7 +80,7 @@ export default function(store, fb) {
                     return;
                 }
                 
-                if(!_time) {
+                if(!_.time) {
                     data.created = data.created || getters.$timestamp;
                     data.updated = getters.$timestamp;
                 }

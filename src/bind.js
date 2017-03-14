@@ -22,7 +22,7 @@ export default class FirebaseBind {
         this._source = value;
     }
     index(key) {
-        return this.data.findIndex(val => val._key == key)
+        return this.data.findIndex(val => val._.key == key)
     }
     reset() {
         this.source.off();
@@ -30,8 +30,10 @@ export default class FirebaseBind {
     }
     record(snap) {
         return {
-            _key: snap.key,
-            _ref: this.ref,
+            _: {
+                _key: snap.key,
+                _ref: this.ref
+            },
             ...snap.val()
         }
     }

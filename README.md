@@ -1,7 +1,17 @@
 # vuex-firebase
 Sync Firebase Data to Vuex
 
-## How to Use
+### Installation
+    npm install vuex-firebase --save
+    
+### Update
+    Changed the scope of _key and _ref to
+    _: {
+        ref: '',
+        key: ''
+    }
+    This change is for deleting purposes
+### How to Use
 
 ```js
     import Vue from 'vue';
@@ -16,7 +26,7 @@ Sync Firebase Data to Vuex
               return getters.$firebase('posts').data.map(post => {
                 return {
                     post,
-                    user: getters.users.find(({user}) => user._key == post.user);
+                    user: getters.users.find(({user}) => user._.key == post.user);
                 } 
               });
             },
@@ -42,12 +52,29 @@ Sync Firebase Data to Vuex
         data() {
           return {
               user: {
-                  _ref: 'users',
+                  _: {
+                    ref: 'users',
+                    time: true, // if you don't want a time stamp to be added
+                    hook: key => {
+                        //a hook for the key of the user object useful when you're adding by push and you want to chain it
+                        //add a post when a user is added
+                        let post = {
+                            _: {
+                                ref: 'posts'
+                            },
+                            title: 'Welcome New User',
+                            body: 'Start binding vuex to firebase with VuexFirebase'
+                            user: key
+                        }
+                    }
+                  },
                   name: 'Ralph',
                   age: 21
               },
               post: {
-                  _ref: 'posts',
+                  _: {
+                    ref: 'posts',
+                  },
                   title: 'My New Post',
                   body: 'This is a cool post',
                   user: 'KEY'
@@ -62,13 +89,13 @@ Sync Firebase Data to Vuex
             this.$store.dispatch('VUEX_FIREBASE_SAVE',this.post);
             
             //passing it with a key will update or add the user on 'users 'node;
-            this.$store.dispatch('VUEX_FIREBASE_SAVE',{...this.user,_key: 'KEY'});
+            this.$store.dispatch('VUEX_FIREBASE_SAVE',{...this.user,_.key: 'KEY'});
             // same as this also
-            this.user._key = 'KEY';
+            this.user._.key = 'KEY';
             this.$store.dispatch('VUEX_FIREBASE_SAVE',this.user);
             
-            // passing only the _key and _ref will delete the user on 'users' node;
-            this.$store.dispatch('VUEX_FIREBASE_SAVE',{_key: 'KEY',_ref: 'users'});
+            // passing only the _ will delete the user on 'users' node;
+            this.$store.dispatch('VUEX_FIREBASE_SAVE',this.user._);
             
         }
     })
@@ -88,9 +115,9 @@ Sync Firebase Data to Vuex
                 changed({index,record},store) {}, // child_changed event hook,
                 moved({index,record},store) {}, // child_moved event hook
                 removed({index,record},store) { // child_removed event hook useful for cascade deleting or using with firebase storage deletions
-                    let posts = store.getters.posts.filter(({post}) =? post._key == record._key);
-                    posts.forEach(({post: {_ref,_key}}) => { // must be equal to post object in getters.posts using object destructuring
-                        store.dispatch('VUEX_FIREBASE_SAVE',{_ref,_key}); // delete the posts owned by the user
+                    let posts = store.getters.posts.filter(({post}) =? post._.key == record._.key);
+                    posts.forEach(({post}) => { // must be equal to post object in getters.posts using object destructuring
+                        store.dispatch('VUEX_FIREBASE_SAVE',post._); // delete the posts owned by the user
                     })
                 } 
             }

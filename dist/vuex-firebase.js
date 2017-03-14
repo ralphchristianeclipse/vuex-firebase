@@ -111,7 +111,7 @@ var FirebaseBind = function () {
         key: 'index',
         value: function index(key) {
             return this.data.findIndex(function (val) {
-                return val._key == key;
+                return val._.key == key;
             });
         }
     }, {
@@ -124,8 +124,10 @@ var FirebaseBind = function () {
         key: 'record',
         value: function record(snap) {
             return _extends({
-                _key: snap.key,
-                _ref: this.ref
+                _: {
+                    _key: snap.key,
+                    _ref: this.ref
+                }
             }, snap.val());
         }
     }, {
@@ -276,31 +278,31 @@ exports.default = function (store, fb) {
         VUEX_FIREBASE_UNBINDED: function VUEX_FIREBASE_UNBINDED(state, payload) {
             Vue.$delete(state.firebase, payload.ref);
         },
-        VUEX_FIREBASE_ADDED: function VUEX_FIREBASE_ADDED(state, _ref2) {
+        VUEX_FIREBASE_ADDED: function VUEX_FIREBASE_ADDED(state, _ref) {
+            var index = _ref.index,
+                record = _ref.record;
+
+            state.firebase[record._.ref].data.splice(index, 0, record);
+        },
+        VUEX_FIREBASE_CHANGED: function VUEX_FIREBASE_CHANGED(state, _ref2) {
             var index = _ref2.index,
                 record = _ref2.record;
 
-            state.firebase[record._ref].data.splice(index, 0, record);
+            state.firebase[record._.ref].data.splice(index, 1, record);
         },
-        VUEX_FIREBASE_CHANGED: function VUEX_FIREBASE_CHANGED(state, _ref3) {
+        VUEX_FIREBASE_REMOVED: function VUEX_FIREBASE_REMOVED(state, _ref3) {
             var index = _ref3.index,
                 record = _ref3.record;
 
-            state.firebase[record._ref].data.splice(index, 1, record);
+            state.firebase[record._.ref].data.splice(index, 1);
         },
-        VUEX_FIREBASE_REMOVED: function VUEX_FIREBASE_REMOVED(state, _ref4) {
+        VUEX_FIREBASE_MOVED: function VUEX_FIREBASE_MOVED(state, _ref4) {
             var index = _ref4.index,
-                record = _ref4.record;
+                record = _ref4.record,
+                newIndex = _ref4.newIndex;
 
-            state.firebase[record._ref].data.splice(index, 1);
-        },
-        VUEX_FIREBASE_MOVED: function VUEX_FIREBASE_MOVED(state, _ref5) {
-            var index = _ref5.index,
-                record = _ref5.record,
-                newIndex = _ref5.newIndex;
-
-            var array = state.firebase[record._ref].data;
-            array.splice(newIndex, 0, state.firebase[record._ref].data.splice(index, 1)[0]);
+            var array = state.firebase[record._.ref].data;
+            array.splice(newIndex, 0, state.firebase[record._.ref].data.splice(index, 1)[0]);
         }
     };
 
@@ -340,27 +342,27 @@ exports.default = function (store, fb) {
             _hook = used for chaining key actions based on the key value good for updating relations of nodes
             _time = set to true if you want to have created and updated time stamps
         */
-        VUEX_FIREBASE_SAVE: function VUEX_FIREBASE_SAVE(_ref6, payload) {
+        VUEX_FIREBASE_SAVE: function VUEX_FIREBASE_SAVE(_ref5, payload) {
             var _this = this;
 
-            var getters = _ref6.getters,
-                commit = _ref6.commit;
+            var getters = _ref5.getters,
+                commit = _ref5.commit;
             return _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-                var _payload, _ref, _key, _time, _hook, data, firebase;
+                var _payload, _, data, firebase;
 
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
-                                _payload = _extends({}, payload), _ref = _payload._ref, _key = _payload._key, _time = _payload._time, _hook = _payload._hook, data = _objectWithoutProperties(_payload, ['_ref', '_key', '_time', '_hook']);
+                                _payload = _extends({}, payload), _ = _payload._, data = _objectWithoutProperties(_payload, ['_']);
 
 
-                                _key = _key || getters.$database.ref(_ref).push().key;
-                                firebase = getters.$database.ref(_ref).child(_key);
+                                _.key = _.key || getters.$database.ref(_.ref).push().key;
+                                firebase = getters.$database.ref(_.ref).child(_.key);
 
 
-                                if (_hook && _key) {
-                                    _hook(_key);
+                                if (_.hook && _.key) {
+                                    _.hook(_.key);
                                 }
 
                                 if (Object.keys(data).length) {
@@ -376,7 +378,7 @@ exports.default = function (store, fb) {
 
                             case 8:
 
-                                if (!_time) {
+                                if (!_.time) {
                                     data.created = data.created || getters.$timestamp;
                                     data.updated = getters.$timestamp;
                                 }
@@ -394,8 +396,8 @@ exports.default = function (store, fb) {
         },
 
         //Create new FirebaseBind Objects based on keys
-        VUEX_FIREBASE_BIND: function VUEX_FIREBASE_BIND(_ref7, payload) {
-            var commit = _ref7.commit;
+        VUEX_FIREBASE_BIND: function VUEX_FIREBASE_BIND(_ref6, payload) {
+            var commit = _ref6.commit;
 
             Object.keys(payload).forEach(function (load) {
                 commit('VUEX_FIREBASE_BINDED', new _bind2.default(fb.database().ref(load), payload[load], load));
@@ -403,9 +405,9 @@ exports.default = function (store, fb) {
         },
 
         //Unbind based on the pass key
-        VUEX_FIREBASE_UNBIND: function VUEX_FIREBASE_UNBIND(_ref8, payload) {
-            var commit = _ref8.commit,
-                getters = _ref8.getters;
+        VUEX_FIREBASE_UNBIND: function VUEX_FIREBASE_UNBIND(_ref7, payload) {
+            var commit = _ref7.commit,
+                getters = _ref7.getters;
 
             Object.keys(payload).forEach(function (load) {
                 commit('VUEX_FIREBASE_UNBINDED', getters.$firebase(load));
