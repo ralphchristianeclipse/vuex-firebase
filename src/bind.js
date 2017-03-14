@@ -31,8 +31,8 @@ export default class FirebaseBind {
     record(snap) {
         return {
             _: {
-                _key: snap.key,
-                _ref: this.ref
+                key: snap.key,
+                ref: this.ref
             },
             ...snap.val()
         }
