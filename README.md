@@ -39,7 +39,10 @@ Sync Firebase Data to Vuex
             }
         }
     }
-    
+    let config = {
+        //Firebase config
+    }
+    FireBase.initializeApp(config);
     const store = new Vuex.Store(Store); //pass your store object
     
     VuexFirebase(store,FireBase);
